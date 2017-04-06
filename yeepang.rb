@@ -26,7 +26,10 @@ class YeePang < Gosu::Window
 
     @player = Player.new
 
-    @star = Star.new(self)
+    @star = Ball.new(self, 1)
+    @star1 = Ball.new(self, 2)
+    @star2 = Ball.new(self, 3)
+    @star3 = Ball.new(self, 4)
 
     @wall0 = Wall.new(self, 13, 13, SCREEN_WIDTH - 13, 0)       # up
     @wall1 = Wall.new(self, 13, 347 - 13, SCREEN_WIDTH - 13, 0) # down
@@ -51,6 +54,9 @@ class YeePang < Gosu::Window
     @back[0].draw(0, 0, 1, 1)
     @player.draw
     @star.draw
+    @star1.draw
+    @star2.draw
+    @star3.draw
     @font.draw("YeePang Jokoa", 10, 10, 0.1, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
