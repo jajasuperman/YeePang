@@ -24,12 +24,12 @@ class YeePang < Gosu::Window
     @space.gravity = CP::Vec2.new(0, 1)
     @dt = (1.0/60.0)
 
-    @player = Player.new
+    @player = Player.new(self)
 
-    @star = Ball.new(self, 1)
-    @star1 = Ball.new(self, 2)
-    @star2 = Ball.new(self, 3)
-    @star3 = Ball.new(self, 4)
+    @ball0 = Ball.new(self, 1)
+    @ball1 = Ball.new(self, 2)
+    @ball2 = Ball.new(self, 3)
+    @ball3 = Ball.new(self, 4)
 
     @wall0 = Wall.new(self, 13, 13, SCREEN_WIDTH - 13, 0)       # up
     @wall1 = Wall.new(self, 13, 347 - 13, SCREEN_WIDTH - 13, 0) # down
@@ -37,6 +37,15 @@ class YeePang < Gosu::Window
     @wall3 = Wall.new(self, SCREEN_WIDTH - 13, 13, 0, 347 - 13) # right
 
     @back = Gosu::Image.load_tiles("img/back.png", 640, 347)
+
+    @space.add_collision_func(:player, :ball) do
+      @player.dead = true
+    end
+
+  end
+
+  def endGame
+    close
   end
 
   def update
@@ -53,10 +62,11 @@ class YeePang < Gosu::Window
   def draw
     @back[0].draw(0, 0, 1, 1)
     @player.draw
-    @star.draw
-    @star1.draw
-    @star2.draw
-    @star3.draw
+    @ball0.draw
+    @ball1.draw
+    @ball2.draw
+    @ball3.draw
+
     @font.draw("YeePang Jokoa", 10, 10, 0.1, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 

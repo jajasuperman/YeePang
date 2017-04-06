@@ -22,7 +22,7 @@ class Ball
     @color.blue = rand(255 - 40) + 40
 
     @body = CP::Body.new(10, INFINITY)
-    @body.p = CP::Vec2.new(13 + rand(SCREEN_WIDTH - @animation.width - 13), 13 + rand(SCREEN_HEIGHT - @animation.height - 13))
+    @body.p = CP::Vec2.new(13 + rand(SCREEN_WIDTH - @animation.width - 13), 13 + rand(222 - @animation.height - 13))
     @body.v = CP::Vec2.new(6, 0)
 
     @shape_verts = [
@@ -38,6 +38,7 @@ class Ball
     @shape.e = 1
     @shape.u = 0
     @shape.group = 5
+    @shape.collision_type = :ball
 
     @window.space.add_body(@body)
     @window.space.add_shape(@shape)
