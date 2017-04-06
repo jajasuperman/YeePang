@@ -53,6 +53,8 @@ class YeePang < Gosu::Window
       @player.move(:right)
     elsif Gosu.button_down? Gosu::KB_LEFT
       @player.move(:left)
+    else
+      @player.move(:stop)
     end
     10.times do
       @space.step(@dt)

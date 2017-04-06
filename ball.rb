@@ -25,16 +25,21 @@ class Ball
     @body.p = CP::Vec2.new(13 + rand(SCREEN_WIDTH - @animation.width - 13), 13 + rand(222 - @animation.height - 13))
     @body.v = CP::Vec2.new(6, 0)
 
-    @shape_verts = [
-                    CP::Vec2.new(-(@animation.width / 2.0), (@animation.height / 2.0)),
-                    CP::Vec2.new((@animation.width / 2.0), (@animation.height / 2.0)),
-                    CP::Vec2.new((@animation.width / 2.0), -(@animation.height / 2.0)),
-                    CP::Vec2.new(-(@animation.width / 2.0), -(@animation.height / 2.0)),
-                   ]
 
-    @shape = CP::Shape::Poly.new(@body,
-                                 @shape_verts,
-                                 CP::Vec2.new(0,0))
+    #@shape_verts = [
+    #                CP::Vec2.new(-(@animation.width / 2.0), (@animation.height / 2.0)),
+    #                CP::Vec2.new((@animation.width / 2.0), (@animation.height / 2.0)),
+    #                CP::Vec2.new((@animation.width / 2.0), -(@animation.height / 2.0)),
+    #                CP::Vec2.new(-(@animation.width / 2.0), -(@animation.height / 2.0)),
+    #               ]
+
+    #@shape = CP::Shape::Poly.new(@body,
+    #                             @shape_verts,
+    #                             CP::Vec2.new(0,0))
+
+    @shape = CP::Shape::Circle.new(@body,
+                                   @animation.width / 2,
+                                   CP::Vec2.new(0,0))
     @shape.e = 1
     @shape.u = 0
     @shape.group = 5

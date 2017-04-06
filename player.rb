@@ -6,11 +6,14 @@ class Player
   def initialize(window)
     @window = window
     @x = 321 ; @y = 278 ; @imgId = 0; @width = @height = 56
+
     @left = Gosu::Image.load_tiles("img/player_left.png", @width, @height)
     @right = Gosu::Image.load_tiles("img/player_right.png", @width, @height)
     @deadImg = Gosu::Image.new("img/hurt.png")
+    @shoot = Gosu::Image.new("img/shoot.png")
+
     @dead = false
-    @direc = :right
+    @direc = :stop
 
     @body = CP::Body::new(10, INFINITY)
     @body.p = CP::Vec2.new(@x-28, @y-28)
@@ -37,10 +40,11 @@ class Player
     if !@dead
       if @direc == :right
         @right[@imgId/10].draw(@shape.body.p.x-28, @y, 1)
-      else
+      elsif @direc == :left
         @left[@imgId/10].draw(@shape.body.p.x-28, @y, 1)
+      else
+        @shoot.draw(@shape.body.p.x-28, @y, 1)
       end
-
     else
       @deadImg.draw(@shape.body.p.x - 28, @y, 1)
       @window.space.remove_body(@body)
@@ -54,7 +58,7 @@ class Player
     if 41 <= @x and @x <= SCREEN_WIDTH - 41
       if @direc == :right
         @shape.body.p.x += 2
-      else
+      elsif @direc == :left
         @shape.body.p.x -= 2
       end
       @imgId = @imgId + 1
