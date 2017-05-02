@@ -6,7 +6,11 @@ class Player
   def initialize(window)
     @window = window
     @x = 321 ; @y = 278 ; @imgId = 0; @width = @height = 56
+    # Offset-a Chipmunk (fisika liburutegia) eta Gosu (2D liburutegia)
+    # koordenatuak berdinak izateko erabiltzen da
+    @offset = 28 #jokalariaren irudiaren tamainaren erdia
 
+    #Jokalariaren irudiak
     @left = Gosu::Image.load_tiles("img/player_left.png", @width, @height)
     @right = Gosu::Image.load_tiles("img/player_right.png", @width, @height)
     @deadImg = Gosu::Image.new("img/hurt.png")
@@ -15,9 +19,11 @@ class Player
     @dead = false
     @direc = :stop
 
+    #Kolisioak lortzeko body bat sortu behar dugu lehenengo
     @body = CP::Body::new(10, INFINITY)
-    @body.p = CP::Vec2.new(@x-28, @y-28)
+    @body.p = CP::Vec2.new(@x - @offset, @y - @offset)
 
+    #Kolisioentzako bektore karratua
     @shape_verts = [
                     CP::Vec2.new(-(@width / 2.0), (@height / 2.0)),
                     CP::Vec2.new((@width / 2.0), (@height / 2.0)),
@@ -25,48 +31,51 @@ class Player
                     CP::Vec2.new(-(@width / 2.0), -(@height / 2.0)),
                    ]
 
+    #Kolisioak shape batekin kontrolatuko dira, body-ra itsatsita dagoena
+    #Aurreko bektoreak kolisioaren limiteak izango dira
     @shape = CP::Shape::Poly.new(@body, @shape_verts, CP::Vec2.new(0,0))
     @shape.e = 0
     @shape.u = 0
     @shape.collision_type = :player
 
+    #Body-a eta shape-a jokoan sartuko ditugu
     @window.space.add_body(@body)
     @window.space.add_shape(@shape)
 
   end
 
-
+  #Funtzio honetan jokalariaren irudiak errendatuko dira tick/think bakoitzean
   def draw
     if !@dead
       if @direc == :right
-        @right[@imgId/10].draw(@shape.body.p.x-28, @y, 1)
+        @right[@imgId/10].draw(@shape.body.p.x - @offset, @y, 1)
       elsif @direc == :left
-        @left[@imgId/10].draw(@shape.body.p.x-28, @y, 1)
+        @left[@imgId/10].draw(@shape.body.p.x - @offset, @y, 1)
       else
-        @shoot.draw(@shape.body.p.x-28, @y, 1)
+        @shoot.draw(@shape.body.p.x-@offset, @y, 1)
       end
     else
-      @deadImg.draw(@shape.body.p.x - 28, @y, 1)
+      @deadImg.draw(@shape.body.p.x - @offset, @y, 1)
+      #Bolak jokalariarekin jotzen ez jarraitzeko fisikak ezabatuko ditugu
       @window.space.remove_body(@body)
       @window.space.remove_shape(@shape)
     #  @window.endGame()
     end
   end
 
+  #Funtzio honetan jokalariaren mugimendua simulatzen da
+  #Irudi-sorta batean posizioa aldatzen
   def move(direc)
+    @imgMaxPos = 39 #Irudi-sortaren azken posizioa
     @direc = direc
-    if 41 <= @x and @x <= SCREEN_WIDTH - 41
       if @direc == :right
         @shape.body.p.x += 2
       elsif @direc == :left
         @shape.body.p.x -= 2
       end
       @imgId = @imgId + 1
-      if @imgId > 39
+      if @imgId > @imgMaxPos
         @imgId = 0
       end
-    end
-
   end
-
 end
