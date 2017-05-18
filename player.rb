@@ -53,18 +53,17 @@ class Player
   def draw
     if !@dead
       if @direc == :right
-        @right[@imgId/10].draw(@shape.body.p.x - @offset, @y, 1)
+        @right[@imgId/10].draw(@shape.body.p.x - @offset, @y, 3)
       elsif @direc == :left
-        @left[@imgId/10].draw(@shape.body.p.x - @offset, @y, 1)
+        @left[@imgId/10].draw(@shape.body.p.x - @offset, @y, 3)
       else
-        @shoot.draw(@shape.body.p.x-@offset, @y, 1)
+        @shoot.draw(@shape.body.p.x - @offset, @y, 3)
       end
     else
-      @deadImg.draw(@shape.body.p.x - @offset, @y, 1)
+      @deadImg.draw(@shape.body.p.x - @offset, @y, 3)
       #Bolak jokalariarekin jotzen ez jarraitzeko fisikak ezabatuko ditugu
       @window.space.remove_body(@body)
-      @window.space.remove_shape(@shape)
-    #  @window.endGame()
+      @window.space.remove_shape(@shape)    
     end
   end
 

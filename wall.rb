@@ -17,6 +17,7 @@ class Wall
                                     1)
     @shape.e = 1
     @shape.u = 0
+    @shape.layers = 2
 
     @window.space.add_static_shape(@shape)
   end

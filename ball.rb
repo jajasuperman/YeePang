@@ -2,6 +2,13 @@ class Ball
 
   attr_reader :shape
 
+  attr_accessor :x
+  attr_accessor :y
+  attr_reader :width
+  attr_reader :height
+
+  attr_reader :size
+
   def initialize(window, size)
     @window = window
 
@@ -16,6 +23,9 @@ class Ball
       @animation = Gosu::Image.new("img/b4.png")
     end
 
+    @width = @animation.width
+    @height = @animation.height
+
     #Kolorea jarriko diegu bolei
     @color = Gosu::Color.new(0xff_000000)
     @color.red = rand(255 - 40) + 40
@@ -26,21 +36,28 @@ class Ball
     @wallOffset = 13 #Hesiaren tamaina
     @minHeight = 222 #Bolak agertuko diren altuera minimoa
     @body = CP::Body.new(10, INFINITY)
-    @body.p = CP::Vec2.new(@wallOffset + rand(SCREEN_WIDTH - @animation.width - @wallOffset), @wallOffset + rand(@minHeight - @animation.height - @wallOffset))
+    @body.p = CP::Vec2.new(@wallOffset + rand(SCREEN_WIDTH - @width - @wallOffset), @wallOffset + rand(@minHeight - @height - @wallOffset))
     @body.v = CP::Vec2.new(6, 0)
 
     #Shape-ak fisikak emango dizkigu bolentzako
     @shape = CP::Shape::Circle.new(@body,
-                                   @animation.width / 2,
+                                   @width / 2,
                                    CP::Vec2.new(0,0))
     @shape.e = 1
     @shape.u = 0
-    @shape.group = 5
+    @shape.group = 4
     @shape.collision_type = :ball
 
     #Fisikak jokoan sartuko ditugu
     @window.space.add_body(@body)
     @window.space.add_shape(@shape)
+  end
+
+  def x
+    @shape.body.p.x
+  end
+  def y
+    @shape.body.p.y
   end
 
   #Funtzio honek bolak errendatuko ditu jokoan

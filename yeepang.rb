@@ -17,7 +17,6 @@ class YeePang < Gosu::Window
   def initialize
     super 640, 480
     self.caption = "YeePang Jokoa"
-    #self.fullscreen = false
 
     @font = Gosu::Font.new(20)
 
@@ -33,6 +32,8 @@ class YeePang < Gosu::Window
     @balls.push(Ball.new(self, 3))
     @balls.push(Ball.new(self, 4))
 
+    @ballToRemove = nil
+
     @wall0 = Wall.new(self, 13, 13, SCREEN_WIDTH - 13, 0)       # up
     @wall1 = Wall.new(self, 13, 347 - 13, SCREEN_WIDTH - 13, 0) # down
     @wall2 = Wall.new(self, 13, 13, 0, 347 - 13)                # left
@@ -45,6 +46,9 @@ class YeePang < Gosu::Window
 
     @space.add_collision_func(:player, :ball) do
       @player.dead = true
+    end
+    @space.add_collision_func(:harpoon, :ball) do |harpoon, ballShape|
+      @ballToRemove = ballShape
     end
 
   end
@@ -73,13 +77,28 @@ class YeePang < Gosu::Window
 
     if @harpoon != nil
       @harpoon.update()
-      if @harpoon.y <= 13
+
+      if @harpoon.shape.body.p.y <= 179
+        @space.remove_body(@harpoon.shape.body)
+        @space.remove_shape(@harpoon.shape)
+        @harpoon = nil
+      end
+
+      if @ballToRemove != nil
+        @balls.delete_if { |ball| ball.shape == @ballToRemove }
+        @space.remove_body(@ballToRemove.body)
+        @space.remove_shape(@ballToRemove)
+        @ballToRemove = nil
+        @space.remove_body(@harpoon.shape.body)
+        @space.remove_shape(@harpoon.shape)
         @harpoon = nil
       end
     end
 
     if Gosu.button_down? Gosu::KB_SPACE
-      @harpoon = Harpoon.new(self, @player.shape.body.p.x)
+      if @harpoon == nil
+        @harpoon = Harpoon.new(self, @player.shape.body.p.x)
+      end
     end
 
     if Gosu.button_down? Gosu::KB_ESCAPE
