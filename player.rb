@@ -1,7 +1,10 @@
 class Player
 
   attr_reader :shape
+  attr_reader :dead
   attr_writer :dead
+
+  attr_reader :offset
 
   def initialize(window)
     @window = window
@@ -15,6 +18,7 @@ class Player
     @right = Gosu::Image.load_tiles("img/player_right.png", @width, @height)
     @deadImg = Gosu::Image.new("img/hurt.png")
     @shoot = Gosu::Image.new("img/shoot.png")
+    @imgMaxPos = 39 #Irudi-sortaren azken posizioa
 
     @dead = false
     @direc = :stop
@@ -36,6 +40,7 @@ class Player
     @shape = CP::Shape::Poly.new(@body, @shape_verts, CP::Vec2.new(0,0))
     @shape.e = 0
     @shape.u = 0
+    @shape.group = 3
     @shape.collision_type = :player
 
     #Body-a eta shape-a jokoan sartuko ditugu
@@ -66,14 +71,13 @@ class Player
   #Funtzio honetan jokalariaren mugimendua simulatzen da
   #Irudi-sorta batean posizioa aldatzen
   def move(direc)
-    @imgMaxPos = 39 #Irudi-sortaren azken posizioa
     @direc = direc
       if @direc == :right
         @shape.body.p.x += 2
       elsif @direc == :left
         @shape.body.p.x -= 2
       end
-      @imgId = @imgId + 1
+      @imgId += 1
       if @imgId > @imgMaxPos
         @imgId = 0
       end

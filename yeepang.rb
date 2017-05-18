@@ -4,6 +4,7 @@ require 'chipmunk'
 require_relative 'player'
 require_relative 'ball'
 require_relative 'wall'
+require_relative 'harpoon'
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -26,26 +27,26 @@ class YeePang < Gosu::Window
 
     @player = Player.new(self)
 
-    @ball0 = Ball.new(self, 1)
-    @ball1 = Ball.new(self, 2)
-    @ball2 = Ball.new(self, 3)
-    @ball3 = Ball.new(self, 4)
+    @balls = []
+    @balls.push(Ball.new(self, 1))
+    @balls.push(Ball.new(self, 2))
+    @balls.push(Ball.new(self, 3))
+    @balls.push(Ball.new(self, 4))
 
     @wall0 = Wall.new(self, 13, 13, SCREEN_WIDTH - 13, 0)       # up
     @wall1 = Wall.new(self, 13, 347 - 13, SCREEN_WIDTH - 13, 0) # down
     @wall2 = Wall.new(self, 13, 13, 0, 347 - 13)                # left
     @wall3 = Wall.new(self, SCREEN_WIDTH - 13, 13, 0, 347 - 13) # right
 
+    @harpoon = nil
+
     @back = Gosu::Image.load_tiles("img/back.png", 640, 347)
+    @back2 = Gosu::Image.new("img/back2.png")
 
     @space.add_collision_func(:player, :ball) do
       @player.dead = true
     end
 
-  end
-
-  def endGame
-    close
   end
 
   def update
@@ -56,26 +57,48 @@ class YeePang < Gosu::Window
     else
       @player.move(:stop)
     end
+
     10.times do
       @space.step(@dt)
+    end
+
+    if @player.dead == true
+      @space.remove_body(@player.shape.body)
+      @space.remove_shape(@player.shape)
+      @balls.each do |b|
+        @space.remove_body(b.shape.body)
+        @space.remove_shape(b.shape)
+      end
+    end
+
+    if @harpoon != nil
+      @harpoon.update()
+      if @harpoon.y <= 13
+        @harpoon = nil
+      end
+    end
+
+    if Gosu.button_down? Gosu::KB_SPACE
+      @harpoon = Harpoon.new(self, @player.shape.body.p.x)
+    end
+
+    if Gosu.button_down? Gosu::KB_ESCAPE
+      exit
     end
   end
 
   def draw
-    @back[0].draw(0, 0, 1, 1)
+    @back[0].draw(0, 0, 1)
+    @back2.draw(0, 0, 3)
     @player.draw
-    @ball0.draw
-    @ball1.draw
-    @ball2.draw
-    @ball3.draw
+
+    @balls.each do |b| b.draw end
+
+    if @harpoon != nil
+      @harpoon.draw()
+    end
 
     @font.draw("YeePang Jokoa", 10, 10, 0.1, 1.0, 1.0, Gosu::Color::YELLOW)
-  end
-
-  def button_down(id)
-    if id == Gosu::Button::KbEscape
-      close
-    end
   end
 
 end

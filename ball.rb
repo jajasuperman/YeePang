@@ -4,7 +4,6 @@ class Ball
 
   def initialize(window, size)
     @window = window
-    @font = Gosu::Font.new(20)
 
     #Tamaina desberdineko bolak sortuko dira
     if size == 1
@@ -47,7 +46,6 @@ class Ball
   #Funtzio honek bolak errendatuko ditu jokoan
   def draw
     @animation.draw(@shape.body.p.x - @animation.width / 2.0, @shape.body.p.y - @animation.height / 2.0, 2)
-    @font.draw(@shape.body.p.y, 300, 10, 0.1, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
 end

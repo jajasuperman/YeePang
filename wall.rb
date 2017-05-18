@@ -4,7 +4,6 @@ class Wall
 
   def initialize(window, x, y, w, h)
     @window = window
-    @color = Gosu::Color.argb(0xff_ffffff)
 
     @a = CP::Vec2.new(0,0)
     @b = CP::Vec2.new(w, h)
