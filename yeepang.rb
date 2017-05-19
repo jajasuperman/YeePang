@@ -27,10 +27,7 @@ class YeePang < Gosu::Window
     @player = Player.new(self)
 
     @balls = []
-    @balls.push(Ball.new(self, 1))
-    @balls.push(Ball.new(self, 2))
-    @balls.push(Ball.new(self, 3))
-    @balls.push(Ball.new(self, 4))
+    @balls.push(Ball.new(self, 50, 100, 1, 1))
 
     @ballToRemove = nil
 
@@ -85,10 +82,17 @@ class YeePang < Gosu::Window
       end
 
       if @ballToRemove != nil
-        @balls.delete_if { |ball| ball.shape == @ballToRemove }
-        @space.remove_body(@ballToRemove.body)
-        @space.remove_shape(@ballToRemove)
+        ball = @balls.detect { |ball| ball.shape == @ballToRemove }
+        @balls.delete(ball)
+        @space.remove_body(ball.shape.body)
+        @space.remove_shape(ball.shape)
         @ballToRemove = nil
+
+        if(ball.size != 4)
+          @balls.push(Ball.new(self, ball.x - 10, ball.y, ball.size + 1, -1))
+          @balls.push(Ball.new(self, ball.x + 10, ball.y, ball.size + 1, 1))
+        end
+
         @space.remove_body(@harpoon.shape.body)
         @space.remove_shape(@harpoon.shape)
         @harpoon = nil
@@ -108,7 +112,7 @@ class YeePang < Gosu::Window
 
   def draw
     @back[0].draw(0, 0, 1)
-    @back2.draw(0, 0, 3)
+    @back2.draw(13, 0, 3)
     @player.draw
 
     @balls.each do |b| b.draw end

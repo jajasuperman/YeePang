@@ -29,10 +29,10 @@ class Player
 
     #Kolisioentzako bektore karratua
     @shape_verts = [
-                    CP::Vec2.new(-(@width / 2.0), (@height / 2.0)),
-                    CP::Vec2.new((@width / 2.0), (@height / 2.0)),
-                    CP::Vec2.new((@width / 2.0), -(@height / 2.0)),
-                    CP::Vec2.new(-(@width / 2.0), -(@height / 2.0)),
+                    CP::Vec2.new(-(@width / 2.0) + 15, (@height / 2.0) - 15),
+                    CP::Vec2.new((@width / 2.0) - 15, (@height / 2.0) - 15),
+                    CP::Vec2.new((@width / 2.0) - 15, -(@height / 2.0) + 15),
+                    CP::Vec2.new(-(@width / 2.0) + 15, -(@height / 2.0) + 15),
                    ]
 
     #Kolisioak shape batekin kontrolatuko dira, body-ra itsatsita dagoena
@@ -63,7 +63,7 @@ class Player
       @deadImg.draw(@shape.body.p.x - @offset, @y, 3)
       #Bolak jokalariarekin jotzen ez jarraitzeko fisikak ezabatuko ditugu
       @window.space.remove_body(@body)
-      @window.space.remove_shape(@shape)    
+      @window.space.remove_shape(@shape)
     end
   end
 

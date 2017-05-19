@@ -4,20 +4,19 @@ class Ball
 
   attr_accessor :x
   attr_accessor :y
-  attr_reader :width
-  attr_reader :height
 
   attr_reader :size
 
-  def initialize(window, size)
+  def initialize(window, x, y, size, direc)
     @window = window
+    @size = size
 
     #Tamaina desberdineko bolak sortuko dira
-    if size == 1
+    if @size == 1
       @animation = Gosu::Image.new("img/b1.png")
-    elsif size == 2
+    elsif @size == 2
       @animation = Gosu::Image.new("img/b2.png")
-    elsif size == 3
+    elsif @size == 3
       @animation = Gosu::Image.new("img/b3.png")
     else
       @animation = Gosu::Image.new("img/b4.png")
@@ -33,11 +32,9 @@ class Ball
     @color.blue = rand(255 - 40) + 40
 
     #Fisikak ezartzeko body bat sortu beharko dugu
-    @wallOffset = 13 #Hesiaren tamaina
-    @minHeight = 222 #Bolak agertuko diren altuera minimoa
     @body = CP::Body.new(10, INFINITY)
-    @body.p = CP::Vec2.new(@wallOffset + rand(SCREEN_WIDTH - @width - @wallOffset), @wallOffset + rand(@minHeight - @height - @wallOffset))
-    @body.v = CP::Vec2.new(6, 0)
+    @body.p = CP::Vec2.new(x, y)
+    @body.v = CP::Vec2.new(6*direc, -10)    
 
     #Shape-ak fisikak emango dizkigu bolentzako
     @shape = CP::Shape::Circle.new(@body,
