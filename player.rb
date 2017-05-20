@@ -70,15 +70,17 @@ class Player
   #Funtzio honetan jokalariaren mugimendua simulatzen da
   #Irudi-sorta batean posizioa aldatzen
   def move(direc)
-    @direc = direc
-      if @direc == :right
-        @shape.body.p.x += 2
-      elsif @direc == :left
-        @shape.body.p.x -= 2
-      end
-      @imgId += 1
-      if @imgId > @imgMaxPos
-        @imgId = 0
+    if !@dead
+      @direc = direc
+        if @direc == :right
+          @shape.body.p.x += 2
+        elsif @direc == :left
+          @shape.body.p.x -= 2
+        end
+        @imgId += 1
+        if @imgId > @imgMaxPos
+          @imgId = 0
+        end
       end
   end
 end

@@ -37,6 +37,7 @@ class YeePang < Gosu::Window
     @wall3 = Wall.new(self, SCREEN_WIDTH - 13, 13, 0, 347 - 13) # right
 
     @harpoon = nil
+    @time = nil
 
     @back = Gosu::Image.load_tiles("img/back.png", 640, 347)
     @back2 = Gosu::Image.new("img/back2.png")
@@ -51,9 +52,9 @@ class YeePang < Gosu::Window
   end
 
   def update
-    if Gosu.button_down? Gosu::KB_RIGHT
+    if Gosu.button_down? Gosu::KB_RIGHT and (@time == nil or Time.now.to_i > @time + 0.5)
       @player.move(:right)
-    elsif Gosu.button_down? Gosu::KB_LEFT
+    elsif Gosu.button_down? Gosu::KB_LEFT and (@time == nil or Time.now.to_i > @time + 0.5)
       @player.move(:left)
     else
       @player.move(:stop)
@@ -101,7 +102,9 @@ class YeePang < Gosu::Window
 
     if Gosu.button_down? Gosu::KB_SPACE
       if @harpoon == nil
+        @time = Time.now.to_i
         @harpoon = Harpoon.new(self, @player.shape.body.p.x)
+        @player.move(:stop)
       end
     end
 
