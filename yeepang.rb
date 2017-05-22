@@ -2,9 +2,9 @@ require 'gosu'
 require 'chipmunk'
 
 require_relative 'player'
-require_relative 'ball'
 require_relative 'wall'
 require_relative 'harpoon'
+require_relative 'levels'
 
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
@@ -20,14 +20,14 @@ class YeePang < Gosu::Window
 
     @font = Gosu::Font.new(20)
 
-    @space = CP::Space.new
-    @space.gravity = CP::Vec2.new(0, 1)
+    @space = Levels.getSpace()
+
     @dt = (1.0/60.0)
 
     @player = Player.new(self)
 
-    @balls = []
-    @balls.push(Ball.new(self, 50, 100, 1, 1))
+    @levelNum = 3
+    @balls, @bricks = Levels.level(self, @levelNum)
 
     @ballToRemove = nil
 
@@ -94,9 +94,16 @@ class YeePang < Gosu::Window
           @balls.push(Ball.new(self, ball.x + 10, ball.y, ball.size + 1, 1))
         end
 
-        @space.remove_body(@harpoon.shape.body)
-        @space.remove_shape(@harpoon.shape)
-        @harpoon = nil
+        if @harpoon != nil
+          @space.remove_body(@harpoon.shape.body)
+          @space.remove_shape(@harpoon.shape)
+          @harpoon = nil
+        end
+      end
+
+      if @balls.empty?
+        @levelNum += 1
+        @balls, @bricks = Levels.level(self, @levelNum)
       end
     end
 
@@ -114,11 +121,12 @@ class YeePang < Gosu::Window
   end
 
   def draw
-    @back[0].draw(0, 0, 1)
+    @back[@levelNum-1].draw(0, 0, 1)
     @back2.draw(13, 0, 3)
     @player.draw
 
     @balls.each do |b| b.draw end
+    @bricks.each do |b| b.draw end
 
     if @harpoon != nil
       @harpoon.draw()

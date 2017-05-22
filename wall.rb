@@ -3,7 +3,6 @@ class Wall
   attr_reader :a, :b
 
   def initialize(window, x, y, w, h)
-    @window = window
 
     @a = CP::Vec2.new(0,0)
     @b = CP::Vec2.new(w, h)
@@ -19,7 +18,7 @@ class Wall
     @shape.u = 0
     @shape.layers = 2
 
-    @window.space.add_static_shape(@shape)
+    window.space.add_static_shape(@shape)
   end
 
 end

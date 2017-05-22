@@ -10,7 +10,7 @@ class Harpoon
   def initialize(window, x)
     @window = window
 
-    @x = x 
+    @x = x
     @y = 450
 
     @width = 16
