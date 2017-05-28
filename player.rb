@@ -61,9 +61,6 @@ class Player
       end
     else
       @deadImg.draw(@shape.body.p.x - @offset, @y, 3)
-      #Bolak jokalariarekin jotzen ez jarraitzeko fisikak ezabatuko ditugu
-      @window.space.remove_body(@body)
-      @window.space.remove_shape(@shape)
     end
   end
 

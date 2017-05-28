@@ -46,17 +46,18 @@ class Game
   end
 
   def restart_level
-    @space.remove_body(@player)
-    @space.remove_shape(@player)
-    @killed = false
+    @space.remove_body(@player.shape.body)
+    @space.remove_shape(@player.shape)
 
-    @space = Levels.getSpace()
-
-    @dt = (1.0/60.0)
+    @balls.each do |b|
+      @space.remove_body(b.shape.body)
+      @space.remove_shape(b.shape)
+    end
 
     @player = Player.new(self)
 
     @balls, @bricks = Levels.level(self, @levelNum)
+    print @balls.size
 
     @ballToRemove = nil
 
@@ -80,20 +81,12 @@ class Game
     end
 
     if @player.dead == true
-      if !@killed
-        @liveNum = @liveNum - 1
-        if @liveNum == 0
-          exit
-        end
-        restart_level()
+      @liveNum = @liveNum - 1
+      if @liveNum == 0
+        exit
       end
-      @killed = true
-      @space.remove_body(@player.shape.body)
-      @space.remove_shape(@player.shape)
-      @balls.each do |b|
-        @space.remove_body(b.shape.body)
-        @space.remove_shape(b.shape)
-      end
+      @player.dead = false
+      restart_level()
     end
 
     if @harpoon != nil
@@ -146,7 +139,7 @@ class Game
   def draw
     @back[@levelNum-1].draw(0, 0, 1)
     @back2.draw(13, 0, 3)
-    @player.draw
+    @player.draw()
 
     @balls.each do |b| b.draw end
     @bricks.each do |b| b.draw end
