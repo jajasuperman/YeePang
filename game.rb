@@ -37,7 +37,8 @@ class Game
     @back2 = Gosu::Image.new("img/back2.png")
 
     @space.add_collision_func(:player, :ball) do
-      @player.dead = true
+      kill_player()
+      @killed = true
     end
     @space.add_collision_func(:harpoon, :ball) do |harpoon, ballShape|
       @ballToRemove = ballShape
@@ -61,10 +62,18 @@ class Game
 
     @ballToRemove = nil
 
+    @killed = false
     @harpoon = nil
     @time = nil
   end
 
+  def kill_player
+    @player.dead = true
+    if !@killed
+      @liveNum = @liveNum - 1
+    end
+    @timeDead = Time.now.to_i
+  end
 
 
   def update
@@ -81,12 +90,13 @@ class Game
     end
 
     if @player.dead == true
-      @liveNum = @liveNum - 1
-      if @liveNum == 0
-        exit
+      if Time.now.to_i > @timeDead + 3
+        if @liveNum <= 0
+          exit
+        end
+        @player.dead = false
+        restart_level()
       end
-      @player.dead = false
-      restart_level()
     end
 
     if @harpoon != nil
