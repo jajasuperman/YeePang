@@ -47,18 +47,9 @@ class Game
   end
 
   def restart_level
-    @space.remove_body(@player.shape.body)
-    @space.remove_shape(@player.shape)
-
-    @balls.each do |b|
-      @space.remove_body(b.shape.body)
-      @space.remove_shape(b.shape)
-    end
-
     @player = Player.new(self)
 
     @balls, @bricks = Levels.level(self, @levelNum)
-    print @balls.size
 
     @ballToRemove = nil
 
@@ -75,7 +66,6 @@ class Game
     @timeDead = Time.now.to_i
   end
 
-
   def update
     if Gosu.button_down? Gosu::KB_RIGHT and (@time == nil or Time.now.to_i > @time + 0.5)
       @player.move(:right)
@@ -90,6 +80,13 @@ class Game
     end
 
     if @player.dead == true
+      @space.remove_body(@player.shape.body)
+      @space.remove_shape(@player.shape)
+
+      @balls.each do |b|
+        @space.remove_body(b.shape.body)
+        @space.remove_shape(b.shape)
+      end
       if Time.now.to_i > @timeDead + 3
         if @liveNum <= 0
           exit
@@ -134,10 +131,12 @@ class Game
     end
 
     if Gosu.button_down? Gosu::KB_SPACE
-      if @harpoon == nil
-        @time = Time.now.to_i
-        @harpoon = Harpoon.new(self, @player.shape.body.p.x)
-        @player.move(:stop)
+      if !@player.dead
+        if @harpoon == nil
+          @time = Time.now.to_i
+          @harpoon = Harpoon.new(self, @player.shape.body.p.x)
+          @player.move(:stop)
+        end
       end
     end
 
