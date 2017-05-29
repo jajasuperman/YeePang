@@ -22,7 +22,7 @@ class Game
     @liveNum = 3
     @killed = false
     @balls, @bricks = Levels.level(self, @levelNum)
-    @gameTime = 0
+    @gameTime = 60
     @t1 = Time.now.to_i
 
     @ballToRemove = nil
@@ -56,7 +56,7 @@ class Game
 
     @killed = false
     @moveTime = nil
-    @gameTime = 0
+    @gameTime = 60
     @t1 = Time.now.to_i
     @t2 = nil
   end
@@ -150,14 +150,13 @@ class Game
     if Gosu.button_down? Gosu::KB_ESCAPE
       exit
     end
-    
+
     @t2 = Time.now.to_i
     delta = @t2 - @t1
     if delta > 1
-      print(@gameTime)
       @t1 = Time.now.to_i
-      @gameTime = @gameTime + 1
-      if @gameTime > 60
+      @gameTime = @gameTime - 1
+      if @gameTime < 0
         kill_player()
       end
     end
