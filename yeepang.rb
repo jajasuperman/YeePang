@@ -35,6 +35,8 @@ class YeePang < Gosu::Window
   def self.changeState(state)
     if state == :game
       $currentState = Game.new()
+    elsif state == :menu
+      $currentState = Menu.new()
     end
   end
 end

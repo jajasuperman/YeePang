@@ -54,7 +54,6 @@ class Game
     @ballToRemove = nil
 
     @killed = false
-    @harpoon = nil
     @time = nil
   end
 
@@ -87,9 +86,12 @@ class Game
         @space.remove_body(b.shape.body)
         @space.remove_shape(b.shape)
       end
+
+      @harpoon = nil
+
       if Time.now.to_i > @timeDead + 3
         if @liveNum <= 0
-          exit
+          YeePang.changeState(:menu)
         end
         @player.dead = false
         restart_level()
@@ -156,6 +158,8 @@ class Game
     if @harpoon != nil
       @harpoon.draw()
     end
+
+    $font.draw("Life: " + @liveNum.to_s, 150, 400, 3, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   def button_down(id)

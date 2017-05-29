@@ -25,7 +25,6 @@ class Menu
       @imgOption.draw(225, 305, 1)
     end
 
-
     $font.draw("jajasuperman & thadah - 2017", 200, 450, 1, 0.5, 0.5, Gosu::Color::YELLOW)
   end
 
