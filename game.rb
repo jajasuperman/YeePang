@@ -22,6 +22,8 @@ class Game
     @liveNum = 3
     @killed = false
     @balls, @bricks = Levels.level(self, @levelNum)
+    @gameTime = 0
+    @t1 = Time.now.to_i
 
     @ballToRemove = nil
 
@@ -31,14 +33,13 @@ class Game
     @wall3 = Wall.new(self, SCREEN_WIDTH - 13, 13, 0, 347 - 13) # right
 
     @harpoon = nil
-    @time = nil
+    @moveTime = nil
 
     @back = Gosu::Image.load_tiles("img/back.png", 640, 347)
     @back2 = Gosu::Image.new("img/back2.png")
 
     @space.add_collision_func(:player, :ball) do
       kill_player()
-      @killed = true
     end
     @space.add_collision_func(:harpoon, :ball) do |harpoon, ballShape|
       @ballToRemove = ballShape
@@ -54,21 +55,25 @@ class Game
     @ballToRemove = nil
 
     @killed = false
-    @time = nil
+    @moveTime = nil
+    @gameTime = 0
+    @t1 = Time.now.to_i
+    @t2 = nil
   end
 
   def kill_player
     @player.dead = true
     if !@killed
       @liveNum = @liveNum - 1
+      @timeDead = Time.now.to_i
     end
-    @timeDead = Time.now.to_i
+    @killed = true
   end
 
   def update
-    if Gosu.button_down? Gosu::KB_RIGHT and (@time == nil or Time.now.to_i > @time + 0.5)
+    if Gosu.button_down? Gosu::KB_RIGHT and (@moveTime == nil or Time.now.to_i > @moveTime + 0.4)
       @player.move(:right)
-    elsif Gosu.button_down? Gosu::KB_LEFT and (@time == nil or Time.now.to_i > @time + 0.5)
+    elsif Gosu.button_down? Gosu::KB_LEFT and (@moveTime == nil or Time.now.to_i > @moveTime + 0.4)
       @player.move(:left)
     else
       @player.move(:stop)
@@ -135,7 +140,7 @@ class Game
     if Gosu.button_down? Gosu::KB_SPACE
       if !@player.dead
         if @harpoon == nil
-          @time = Time.now.to_i
+          @moveTime = Time.now.to_i
           @harpoon = Harpoon.new(self, @player.shape.body.p.x)
           @player.move(:stop)
         end
@@ -144,6 +149,17 @@ class Game
 
     if Gosu.button_down? Gosu::KB_ESCAPE
       exit
+    end
+    
+    @t2 = Time.now.to_i
+    delta = @t2 - @t1
+    if delta > 1
+      print(@gameTime)
+      @t1 = Time.now.to_i
+      @gameTime = @gameTime + 1
+      if @gameTime > 60
+        kill_player()
+      end
     end
   end
 
