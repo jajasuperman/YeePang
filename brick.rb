@@ -3,8 +3,11 @@ class Brick
   attr_reader :shape
   attr_reader :x
   attr_reader :y
+  attr_reader :drop
 
-  def initialize(window, x, y)
+  def initialize(window, x, y, drop)
+
+    @drop = drop
 
     @img = Gosu::Image.new("img/brick1.png")
 

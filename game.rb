@@ -19,7 +19,7 @@ class Game
 
     @player = Player.new(self)
 
-    @levelNum = 3
+    @levelNum = 5
     @liveNum = 3
     @killed = false
     @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
@@ -136,8 +136,9 @@ class Game
           @space.remove_shape(@harpoon.shape)
           @harpoon = nil
         end
-
-        @dropItems.push(DropItem.new(@space, brick.x, brick.y, "time"))
+        if brick.drop != ""
+          @dropItems.push(DropItem.new(@space, brick.x, brick.y, brick.drop))
+        end
       end
 
       if @ballToRemove != nil
@@ -161,7 +162,7 @@ class Game
 
       if @balls.empty?
         @levelNum += 1
-        @balls, @bricks = Levels.level(self, @levelNum)
+        @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
       end
     end
 
@@ -173,6 +174,8 @@ class Game
       @dropToRemove = nil
       if drop.type == "time"
         @gameTime += 10
+      elsif drop.type == "heart"
+        @liveNum += 1
       end
     end
 
@@ -195,7 +198,7 @@ class Game
       delta = @t2 - @t1
       if delta > 1 and @gameTime > 0
         @t1 = Time.now.to_i
-        @gameTime = @gameTime - 1
+        @gameTime -= 1
         if @gameTime == 0
           kill_player()
         end
@@ -218,6 +221,8 @@ class Game
 
     $font.draw("Life: " + @liveNum.to_s, 150, 400, 3, 1.0, 1.0, Gosu::Color::YELLOW)
     $font.draw("Time: " + @gameTime.to_s, 150, 430, 3, 1.0, 1.0, Gosu::Color::YELLOW)
+
+    $font.draw("Level " + @levelNum.to_s, 400, 415, 3, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   def button_down(id)
