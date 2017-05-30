@@ -17,7 +17,7 @@ class Menu
 
   def draw
     $font.draw("Play", 250, 250, 1, 1.0, 1.0, Gosu::Color::YELLOW)
-    $font.draw("Options", 250, 300, 1, 1.0, 1.0, Gosu::Color::YELLOW)
+    $font.draw("Exit", 250, 300, 1, 1.0, 1.0, Gosu::Color::YELLOW)
 
     if @option == 1
       @imgOption.draw(225, 255, 1)
@@ -38,8 +38,12 @@ class Menu
     end
 
     if id == Gosu::KB_RETURN
-      @soundSelect2.play()
-      YeePang.changeState(:game)
+      if @option == 1
+        @soundSelect2.play()
+        YeePang.changeState(:game)
+      elsif @option == 2
+        exit
+      end
     end
   end
 

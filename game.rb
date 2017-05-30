@@ -3,6 +3,7 @@ require 'chipmunk'
 require_relative 'player'
 require_relative 'wall'
 require_relative 'harpoon'
+require_relative 'dropItem'
 require_relative 'levels'
 
 INFINITY = 1.0/0
@@ -21,11 +22,9 @@ class Game
     @levelNum = 3
     @liveNum = 3
     @killed = false
-    @balls, @bricks = Levels.level(self, @levelNum)
-    @gameTime = 60
+    @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
+    @dropItems = []
     @t1 = Time.now.to_i
-
-    @ballToRemove = nil
 
     @wall0 = Wall.new(self, 13, 13, SCREEN_WIDTH - 13, 0)       # up
     @wall1 = Wall.new(self, 13, 347 - 13, SCREEN_WIDTH - 13, 0) # down
@@ -44,19 +43,25 @@ class Game
     @space.add_collision_func(:harpoon, :ball) do |harpoon, ballShape|
       @ballToRemove = ballShape
     end
+    @space.add_collision_func(:harpoon, :brick) do |harpoon, brickShape|
+      @brickToRemove = brickShape
+    end
+    @space.add_collision_func(:player, :dropItem) do |player, dropShape|
+      @dropToRemove = dropShape
+    end
 
   end
 
   def restart_level
     @player = Player.new(self)
 
-    @balls, @bricks = Levels.level(self, @levelNum)
+    @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
 
     @ballToRemove = nil
+    @dropItems = []
 
     @killed = false
     @moveTime = nil
-    @gameTime = 60
     @t1 = Time.now.to_i
     @t2 = nil
   end
@@ -91,6 +96,14 @@ class Game
         @space.remove_body(b.shape.body)
         @space.remove_shape(b.shape)
       end
+      @bricks.each do |b|
+        @space.remove_body(b.shape.body)
+        @space.remove_shape(b.shape)
+      end
+      @dropItems.each do |b|
+        @space.remove_body(b.shape.body)
+        @space.remove_shape(b.shape)
+      end
 
       @harpoon = nil
 
@@ -110,6 +123,21 @@ class Game
         @space.remove_body(@harpoon.shape.body)
         @space.remove_shape(@harpoon.shape)
         @harpoon = nil
+      end
+
+      if @brickToRemove != nil
+        brick = @bricks.detect { |brick| brick.shape == @brickToRemove }
+        @bricks.delete(brick)
+        @space.remove_static_shape(brick.shape)
+        @brickToRemove = nil
+
+        if @harpoon != nil
+          @space.remove_body(@harpoon.shape.body)
+          @space.remove_shape(@harpoon.shape)
+          @harpoon = nil
+        end
+
+        @dropItems.push(DropItem.new(@space, brick.x, brick.y, "time"))
       end
 
       if @ballToRemove != nil
@@ -137,6 +165,17 @@ class Game
       end
     end
 
+    if @dropToRemove != nil
+      drop = @dropItems.detect { |drop| drop.shape == @dropToRemove }
+      @dropItems.delete(drop)
+      @space.remove_body(drop.shape.body)
+      @space.remove_shape(drop.shape)
+      @dropToRemove = nil
+      if drop.type == "time"
+        @gameTime += 10
+      end
+    end
+
     if Gosu.button_down? Gosu::KB_SPACE
       if !@player.dead
         if @harpoon == nil
@@ -151,13 +190,15 @@ class Game
       exit
     end
 
-    @t2 = Time.now.to_i
-    delta = @t2 - @t1
-    if delta > 1
-      @t1 = Time.now.to_i
-      @gameTime = @gameTime - 1
-      if @gameTime < 0
-        kill_player()
+    if !@player.dead
+      @t2 = Time.now.to_i
+      delta = @t2 - @t1
+      if delta > 1 and @gameTime > 0
+        @t1 = Time.now.to_i
+        @gameTime = @gameTime - 1
+        if @gameTime == 0
+          kill_player()
+        end
       end
     end
   end
@@ -169,12 +210,14 @@ class Game
 
     @balls.each do |b| b.draw end
     @bricks.each do |b| b.draw end
+    @dropItems.each do |b| b.draw end
 
     if @harpoon != nil
       @harpoon.draw()
     end
 
     $font.draw("Life: " + @liveNum.to_s, 150, 400, 3, 1.0, 1.0, Gosu::Color::YELLOW)
+    $font.draw("Time: " + @gameTime.to_s, 150, 430, 3, 1.0, 1.0, Gosu::Color::YELLOW)
   end
 
   def button_down(id)

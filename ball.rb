@@ -8,7 +8,6 @@ class Ball
   attr_reader :size
 
   def initialize(window, x, y, size, direc)
-    @window = window
     @size = size
 
     #Tamaina desberdineko bolak sortuko dira
@@ -22,23 +21,14 @@ class Ball
       @animation = Gosu::Image.new("img/b4.png")
     end
 
-    @width = @animation.width
-    @height = @animation.height
-
-    #Kolorea jarriko diegu bolei
-    @color = Gosu::Color.new(0xff_000000)
-    @color.red = rand(255 - 40) + 40
-    @color.green = rand(255 - 40) + 40
-    @color.blue = rand(255 - 40) + 40
-
     #Fisikak ezartzeko body bat sortu beharko dugu
-    @body = CP::Body.new(10, INFINITY)
-    @body.p = CP::Vec2.new(x, y)
-    @body.v = CP::Vec2.new(6*direc, -10)    
+    body = CP::Body.new(10, INFINITY)
+    body.p = CP::Vec2.new(x, y)
+    body.v = CP::Vec2.new(6*direc, -10)
 
     #Shape-ak fisikak emango dizkigu bolentzako
-    @shape = CP::Shape::Circle.new(@body,
-                                   @width / 2,
+    @shape = CP::Shape::Circle.new(body,
+                                   @animation.width / 2,
                                    CP::Vec2.new(0,0))
     @shape.e = 1
     @shape.u = 0
@@ -46,8 +36,8 @@ class Ball
     @shape.collision_type = :ball
 
     #Fisikak jokoan sartuko ditugu
-    @window.space.add_body(@body)
-    @window.space.add_shape(@shape)
+    window.space.add_body(body)
+    window.space.add_shape(@shape)
   end
 
   def x

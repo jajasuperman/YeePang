@@ -14,6 +14,7 @@ class Levels
   def self.level(window, num)
     balls = []
     bricks = []
+    time = 60
 
     case num
       when 1
@@ -28,6 +29,6 @@ class Levels
         bricks.push(Brick.new(window, 450, 150))
     end
 
-    return balls, bricks
+    return balls, bricks, time
   end
 end

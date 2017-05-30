@@ -1,16 +1,16 @@
-class Brick
+class DropItem
 
   attr_reader :shape
-  attr_reader :x
-  attr_reader :y
+  attr_reader :type
 
-  def initialize(window, x, y)
+  def initialize(space, x, y, type)
 
-    @img = Gosu::Image.new("img/brick1.png")
+    @img = Gosu::Image.new("img/"+ type + ".png")
 
-    body = CP::Body.new_static()
+    @type = type
+
+    body = CP::Body::new(1, INFINITY)
     body.p = CP::Vec2.new(x, y)
-
 
     shape_verts = [
                     CP::Vec2.new(-(@img.width / 2.0), (@img.height / 2.0)),
@@ -20,18 +20,14 @@ class Brick
                    ]
 
     @shape = CP::Shape::Poly.new(body, shape_verts, CP::Vec2.new(0,0))
-    @shape.e = 1
+    @shape.e = 0
     @shape.u = 0
-    @shape.collision_type = :brick
+    @shape.layers = 2
+    @shape.group = 4
+    @shape.collision_type = :dropItem
 
-    window.space.add_static_shape(@shape)
-  end
-
-  def x
-    @shape.body.p.x
-  end
-  def y
-    @shape.body.p.y
+    space.add_body(body)
+    space.add_shape(@shape)
   end
 
   def draw

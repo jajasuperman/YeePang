@@ -7,8 +7,7 @@ class Player
   attr_reader :offset
 
   def initialize(window)
-    @window = window
-    @x = 321 ; @y = 278 ; @imgId = 0; @width = @height = 56
+    x = 321 ; @y = 278 ; @imgId = 0; @width = @height = 56
     # Offset-a Chipmunk (fisika liburutegia) eta Gosu (2D liburutegia)
     # koordenatuak berdinak izateko erabiltzen da
     @offset = 28 #jokalariaren irudiaren tamainaren erdia
@@ -24,11 +23,11 @@ class Player
     @direc = :stop
 
     #Kolisioak lortzeko body bat sortu behar dugu lehenengo
-    @body = CP::Body::new(10, INFINITY)
-    @body.p = CP::Vec2.new(@x - @offset, @y - @offset)
+    body = CP::Body::new(10, INFINITY)
+    body.p = CP::Vec2.new(x - @offset, @y - @offset)
 
     #Kolisioentzako bektore karratua
-    @shape_verts = [
+    shape_verts = [
                     CP::Vec2.new(-(@width / 2.0) + 15, (@height / 2.0) - 15),
                     CP::Vec2.new((@width / 2.0) - 15, (@height / 2.0) - 15),
                     CP::Vec2.new((@width / 2.0) - 15, -(@height / 2.0) + 15),
@@ -37,15 +36,15 @@ class Player
 
     #Kolisioak shape batekin kontrolatuko dira, body-ra itsatsita dagoena
     #Aurreko bektoreak kolisioaren limiteak izango dira
-    @shape = CP::Shape::Poly.new(@body, @shape_verts, CP::Vec2.new(0,0))
+    @shape = CP::Shape::Poly.new(body, shape_verts, CP::Vec2.new(0,0))
     @shape.e = 0
     @shape.u = 0
     @shape.group = 3
     @shape.collision_type = :player
 
     #Body-a eta shape-a jokoan sartuko ditugu
-    @window.space.add_body(@body)
-    @window.space.add_shape(@shape)
+    window.space.add_body(body)
+    window.space.add_shape(@shape)
 
   end
 
