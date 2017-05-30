@@ -19,7 +19,7 @@ class Game
 
     @player = Player.new(self)
 
-    @levelNum = 3
+    @levelNum = 1
     @liveNum = 3
     @killed = false
     @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
@@ -162,7 +162,7 @@ class Game
       end
 
       if @balls.empty?
-        if @levelNum <= 5
+        if @levelNum < 5
           @levelNum += 1
           @balls.each do |b|
             @space.remove_body(b.shape.body)
