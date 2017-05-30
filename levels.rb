@@ -34,7 +34,7 @@ class Levels
         balls.push(Ball.new(window, 30, 200, 4, 1))
         balls.push(Ball.new(window, 50, 130, 4, -1))
         balls.push(Ball.new(window, 120, 100, 4, 1))
-        balls.push(Ball.new(window, 170, 10, 4, 1))
+        balls.push(Ball.new(window, 170, 20, 4, 1))
         balls.push(Ball.new(window, 90, 76, 4, -1))
         balls.push(Ball.new(window, 350, 196, 4, 1))
         balls.push(Ball.new(window, 320, 54, 4, -1))

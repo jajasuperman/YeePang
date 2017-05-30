@@ -19,7 +19,7 @@ class Game
 
     @player = Player.new(self)
 
-    @levelNum = 1
+    @levelNum = 3
     @liveNum = 3
     @killed = false
     @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
@@ -99,8 +99,7 @@ class Game
         @space.remove_shape(b.shape)
       end
       @bricks.each do |b|
-        @space.remove_body(b.shape.body)
-        @space.remove_shape(b.shape)
+        @space.remove_static_shape(b.shape)
       end
       @dropItems.each do |b|
         @space.remove_body(b.shape.body)
@@ -165,6 +164,17 @@ class Game
       if @balls.empty?
         if @levelNum <= 5
           @levelNum += 1
+          @balls.each do |b|
+            @space.remove_body(b.shape.body)
+            @space.remove_shape(b.shape)
+          end
+          @bricks.each do |b|
+            @space.remove_static_shape(b.shape)
+          end
+          @dropItems.each do |b|
+            @space.remove_body(b.shape.body)
+            @space.remove_shape(b.shape)
+          end
           @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
         else
           YeePang.changeState(:menu)
