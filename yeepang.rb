@@ -18,6 +18,8 @@ class YeePang < Gosu::Window
     $currentState = Menu.new()
 
     $font = Gosu::Font.new(self, "./font/ARCADECLASSIC.TTF", 30)
+    @music = Gosu::Sample.new("sound/music.ogg")
+    @music.play(1, 1, true)
   end
 
   def update

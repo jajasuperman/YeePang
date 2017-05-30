@@ -19,7 +19,7 @@ class Game
 
     @player = Player.new(self)
 
-    @levelNum = 5
+    @levelNum = 1
     @liveNum = 3
     @killed = false
     @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
@@ -37,10 +37,13 @@ class Game
     @back = Gosu::Image.load_tiles("img/back.png", 640, 347)
     @back2 = Gosu::Image.new("img/back2.png")
 
+    @pop = Gosu::Sample.new("sound/pop.wav")
+
     @space.add_collision_func(:player, :ball) do
       kill_player()
     end
     @space.add_collision_func(:harpoon, :ball) do |harpoon, ballShape|
+      @pop.play()
       @ballToRemove = ballShape
     end
     @space.add_collision_func(:harpoon, :brick) do |harpoon, brickShape|
@@ -49,7 +52,6 @@ class Game
     @space.add_collision_func(:player, :dropItem) do |player, dropShape|
       @dropToRemove = dropShape
     end
-
   end
 
   def restart_level
@@ -161,8 +163,12 @@ class Game
       end
 
       if @balls.empty?
-        @levelNum += 1
-        @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
+        if @levelNum <= 5
+          @levelNum += 1
+          @balls, @bricks, @gameTime = Levels.level(self, @levelNum)
+        else
+          YeePang.changeState(:menu)
+        end
       end
     end
 
